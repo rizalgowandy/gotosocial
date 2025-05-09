@@ -22,14 +22,14 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/superseriousbusiness/gotosocial/internal/db"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/status"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/usermute"
-	"github.com/superseriousbusiness/gotosocial/internal/gtscontext"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/id"
-	"github.com/superseriousbusiness/gotosocial/internal/util"
+	"code.superseriousbusiness.org/gotosocial/internal/db"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/status"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/usermute"
+	"code.superseriousbusiness.org/gotosocial/internal/gtscontext"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/id"
+	"code.superseriousbusiness.org/gotosocial/internal/util"
 )
 
 // notifyPendingReply notifies the account replied-to
@@ -99,54 +99,75 @@ func (s *Surface) notifyMentions(
 
 	for _, mention := range status.Mentions {
 		// Set status on the mention (stops
-		// the below function populating it).
+		// notifyMention having to populate it).
 		mention.Status = status
 
-		// Beforehand, ensure the passed mention is fully populated.
-		if err := s.State.DB.PopulateMention(ctx, mention); err != nil {
-			errs.Appendf("error populating mention %s: %w", mention.ID, err)
-			continue
-		}
-
-		if mention.TargetAccount.IsRemote() {
-			// no need to notify
-			// remote accounts.
-			continue
-		}
-
-		// Ensure thread not muted
-		// by mentioned account.
-		muted, err := s.State.DB.IsThreadMutedByAccount(
-			ctx,
-			status.ThreadID,
-			mention.TargetAccountID,
-		)
-		if err != nil {
-			errs.Appendf("error checking status thread mute %s: %w", status.ThreadID, err)
-			continue
-		}
-
-		if muted {
-			// This mentioned account
-			// has muted the thread.
-			// Don't pester them.
-			continue
-		}
-
-		// notify mentioned
-		// by status author.
-		if err := s.Notify(ctx,
-			gtsmodel.NotificationMention,
-			mention.TargetAccount,
-			mention.OriginAccount,
-			mention.StatusID,
-		); err != nil {
-			errs.Appendf("error notifying mention target %s: %w", mention.TargetAccountID, err)
-			continue
+		// Do the thing.
+		if err := s.notifyMention(ctx, mention); err != nil {
+			errs = append(errs, err)
 		}
 	}
 
 	return errs.Combine()
+}
+
+// notifyMention notifies the target
+// of the given mention that they've
+// been mentioned in a status.
+func (s *Surface) notifyMention(
+	ctx context.Context,
+	mention *gtsmodel.Mention,
+) error {
+	// Beforehand, ensure the passed mention is fully populated.
+	if err := s.State.DB.PopulateMention(ctx, mention); err != nil {
+		return gtserror.Newf(
+			"error populating mention %s: %w",
+			mention.ID, err,
+		)
+	}
+
+	if mention.TargetAccount.IsRemote() {
+		// no need to notify
+		// remote accounts.
+		return nil
+	}
+
+	// Ensure thread not muted
+	// by mentioned account.
+	muted, err := s.State.DB.IsThreadMutedByAccount(
+		ctx,
+		mention.Status.ThreadID,
+		mention.TargetAccountID,
+	)
+	if err != nil {
+		return gtserror.Newf(
+			"error checking status thread mute %s: %w",
+			mention.Status.ThreadID, err,
+		)
+	}
+
+	if muted {
+		// This mentioned account
+		// has muted the thread.
+		// Don't pester them.
+		return nil
+	}
+
+	// Notify mentioned
+	// by status author.
+	if err := s.Notify(ctx,
+		gtsmodel.NotificationMention,
+		mention.TargetAccount,
+		mention.OriginAccount,
+		mention.StatusID,
+	); err != nil {
+		return gtserror.Newf(
+			"error notifying mention target %s: %w",
+			mention.TargetAccountID, err,
+		)
+	}
+
+	return nil
 }
 
 // notifyFollowRequest notifies the target of the given

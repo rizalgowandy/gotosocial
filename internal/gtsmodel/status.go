@@ -21,8 +21,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/superseriousbusiness/gotosocial/internal/log"
-	"github.com/superseriousbusiness/gotosocial/internal/util/xslices"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
+	"code.superseriousbusiness.org/gotosocial/internal/util/xslices"
 )
 
 // Status represents a user-created 'post' or 'status' in the database, either remote or local
@@ -204,6 +204,16 @@ func (s *Status) GetAttachmentByRemoteURL(url string) (*MediaAttachment, bool) {
 func (s *Status) GetMentionByTargetURI(uri string) (*Mention, bool) {
 	for _, mention := range s.Mentions {
 		if mention.TargetAccountURI == uri {
+			return mention, true
+		}
+	}
+	return nil, false
+}
+
+// GetMentionByTargetID searches status for Mention{} with target ID.
+func (s *Status) GetMentionByTargetID(id string) (*Mention, bool) {
+	for _, mention := range s.Mentions {
+		if mention.TargetAccountID == id {
 			return mention, true
 		}
 	}

@@ -20,10 +20,10 @@ cd ~/gotosocial
 
 ## Get the latest docker-compose.yaml
 
-Use `wget` to download the latest [docker-compose.yaml](https://raw.githubusercontent.com/superseriousbusiness/gotosocial/main/example/docker-compose/docker-compose.yaml) example, which we'll customize for our needs:
+Use `wget` to download the latest [docker-compose.yaml](https://codeberg.org/superseriousbusiness/gotosocial/raw/branch/main/example/docker-compose/docker-compose.yaml) example, which we'll customize for our needs:
 
 ```bash
-wget https://raw.githubusercontent.com/superseriousbusiness/gotosocial/main/example/docker-compose/docker-compose.yaml
+wget https://codeberg.org/superseriousbusiness/gotosocial/raw/branch/main/example/docker-compose/docker-compose.yaml
 ```
 
 ## Edit the docker-compose.yaml
@@ -45,7 +45,7 @@ If desired, update the GoToSocial Docker image tag to the version of GtS you wan
 * `X.Y.Z`: release tag. This points to a specific, stable, release of GoToSocial.
 
 !!! tip
-    Both the `latest` and `snapshot` tags are moving tags, whereas the `X.Y.Z` tags are immutable. The result of pulling a moving tag might change from day to day. `latest` on one system might not be the same `latest` on a different system. It's recommended to use the `X.Y.Z` tags instead so you always know exactly which version of GoToSocial you're running. The list of releases can be found [right here](https://github.com/superseriousbusiness/gotosocial/releases), with the newest release at the top.
+    Both the `latest` and `snapshot` tags are moving tags, whereas the `X.Y.Z` tags are immutable. The result of pulling a moving tag might change from day to day. `latest` on one system might not be the same `latest` on a different system. It's recommended to use the `X.Y.Z` tags instead so you always know exactly which version of GoToSocial you're running. The list of releases can be found [right here](https://codeberg.org/superseriousbusiness/gotosocial/releases), with the newest release at the top.
 
 ### Host
 

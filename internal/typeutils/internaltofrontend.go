@@ -28,21 +28,21 @@ import (
 	"strings"
 	"time"
 
+	apimodel "code.superseriousbusiness.org/gotosocial/internal/api/model"
+	"code.superseriousbusiness.org/gotosocial/internal/config"
+	"code.superseriousbusiness.org/gotosocial/internal/db"
+	statusfilter "code.superseriousbusiness.org/gotosocial/internal/filter/status"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/usermute"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/id"
+	"code.superseriousbusiness.org/gotosocial/internal/language"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
+	"code.superseriousbusiness.org/gotosocial/internal/media"
+	"code.superseriousbusiness.org/gotosocial/internal/text"
+	"code.superseriousbusiness.org/gotosocial/internal/uris"
+	"code.superseriousbusiness.org/gotosocial/internal/util"
 	"codeberg.org/gruf/go-debug"
-	apimodel "github.com/superseriousbusiness/gotosocial/internal/api/model"
-	"github.com/superseriousbusiness/gotosocial/internal/config"
-	"github.com/superseriousbusiness/gotosocial/internal/db"
-	statusfilter "github.com/superseriousbusiness/gotosocial/internal/filter/status"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/usermute"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/id"
-	"github.com/superseriousbusiness/gotosocial/internal/language"
-	"github.com/superseriousbusiness/gotosocial/internal/log"
-	"github.com/superseriousbusiness/gotosocial/internal/media"
-	"github.com/superseriousbusiness/gotosocial/internal/text"
-	"github.com/superseriousbusiness/gotosocial/internal/uris"
-	"github.com/superseriousbusiness/gotosocial/internal/util"
 )
 
 const (
@@ -50,8 +50,8 @@ const (
 	instancePollsMinExpiration               = 300     // seconds
 	instancePollsMaxExpiration               = 2629746 // seconds
 	instanceAccountsMaxFeaturedTags          = 10
-	instanceAccountsMaxProfileFields         = 6 // FIXME: https://github.com/superseriousbusiness/gotosocial/issues/1876
-	instanceSourceURL                        = "https://github.com/superseriousbusiness/gotosocial"
+	instanceAccountsMaxProfileFields         = 6 // FIXME: https://codeberg.org/superseriousbusiness/gotosocial/issues/1876
+	instanceSourceURL                        = "https://codeberg.org/superseriousbusiness/gotosocial"
 	instanceMastodonVersion                  = "3.5.3"
 )
 
@@ -1966,6 +1966,8 @@ func (c *Converter) InstanceToAPIV2Instance(ctx context.Context, i *gtsmodel.Ins
 	instance.Configuration.Statuses.CharactersReservedPerURL = instanceStatusesCharactersReservedPerURL
 	instance.Configuration.Statuses.SupportedMimeTypes = instanceStatusesSupportedMimeTypes
 	instance.Configuration.MediaAttachments.SupportedMimeTypes = media.SupportedMIMETypes
+	instance.Configuration.MediaAttachments.DescriptionLimit = config.GetMediaDescriptionMaxChars()
+	instance.Configuration.MediaAttachments.DescriptionMinimum = config.GetMediaDescriptionMinChars()
 
 	// NOTE: we use the local max sizes here
 	// as it hints to apps like Tusky for image
@@ -2155,7 +2157,7 @@ func (c *Converter) ConversationToAPIConversation(
 	// If no other accounts are involved in this convo,
 	// just include the requesting account and return.
 	//
-	// See: https://github.com/superseriousbusiness/gotosocial/issues/3385#issuecomment-2394033477
+	// See: https://codeberg.org/superseriousbusiness/gotosocial/issues/3385#issuecomment-2394033477
 	otherAcctsLen := len(conversation.OtherAccounts)
 	if otherAcctsLen == 0 {
 		apiAcct, err := c.AccountToAPIAccountPublic(ctx, requester)

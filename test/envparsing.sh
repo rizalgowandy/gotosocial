@@ -19,70 +19,70 @@ EXPECT=$(cat << "EOF"
         "127.0.0.1/32"
     ],
     "advanced-rate-limit-requests": 6969,
+    "advanced-scraper-deterrence-difficulty": 5,
+    "advanced-scraper-deterrence-enabled": true,
     "advanced-sender-multiplier": -1,
     "advanced-throttling-multiplier": -1,
     "advanced-throttling-retry-after": 10000000000,
     "application-name": "gts",
     "bind-address": "127.0.0.1",
-    "cache": {
-        "account-mem-ratio": 5,
-        "account-note-mem-ratio": 1,
-        "account-settings-mem-ratio": 0.1,
-        "account-stats-mem-ratio": 2,
-        "application-mem-ratio": 0.1,
-        "block-ids-mem-ratio": 3,
-        "block-mem-ratio": 2,
-        "boost-of-ids-mem-ratio": 3,
-        "client-mem-ratio": 0.1,
-        "conversation-last-status-ids-mem-ratio": 2,
-        "conversation-mem-ratio": 1,
-        "domain-permission-draft-mem-ratio": 0.5,
-        "domain-permission-subscription-mem-ratio": 0.5,
-        "emoji-category-mem-ratio": 0.1,
-        "emoji-mem-ratio": 3,
-        "filter-keyword-mem-ratio": 0.5,
-        "filter-mem-ratio": 0.5,
-        "filter-status-mem-ratio": 0.5,
-        "follow-ids-mem-ratio": 4,
-        "follow-mem-ratio": 2,
-        "follow-request-ids-mem-ratio": 2,
-        "follow-request-mem-ratio": 2,
-        "following-tag-ids-mem-ratio": 2,
-        "in-reply-to-ids-mem-ratio": 3,
-        "instance-mem-ratio": 1,
-        "interaction-request-mem-ratio": 1,
-        "list-ids-mem-ratio": 2,
-        "list-mem-ratio": 1,
-        "listed-ids-mem-ratio": 2,
-        "marker-mem-ratio": 0.5,
-        "media-mem-ratio": 4,
-        "memory-target": 104857600,
-        "mention-mem-ratio": 2,
-        "move-mem-ratio": 0.1,
-        "notification-mem-ratio": 2,
-        "poll-mem-ratio": 1,
-        "poll-vote-ids-mem-ratio": 2,
-        "poll-vote-mem-ratio": 2,
-        "report-mem-ratio": 1,
-        "sin-bin-status-mem-ratio": 0.5,
-        "status-bookmark-ids-mem-ratio": 2,
-        "status-bookmark-mem-ratio": 0.5,
-        "status-edit-mem-ratio": 2,
-        "status-fave-ids-mem-ratio": 3,
-        "status-fave-mem-ratio": 2,
-        "status-mem-ratio": 5,
-        "tag-mem-ratio": 2,
-        "thread-mute-mem-ratio": 0.2,
-        "token-mem-ratio": 0.75,
-        "tombstone-mem-ratio": 0.5,
-        "user-mem-ratio": 0.25,
-        "user-mute-ids-mem-ratio": 3,
-        "user-mute-mem-ratio": 2,
-        "visibility-mem-ratio": 2,
-        "web-push-subscription-ids-mem-ratio": 1,
-        "web-push-subscription-mem-ratio": 1,
-        "webfinger-mem-ratio": 0.1
-    },
+    "cache-account-mem-ratio": 5,
+    "cache-account-note-mem-ratio": 1,
+    "cache-account-settings-mem-ratio": 0.1,
+    "cache-account-stats-mem-ratio": 2,
+    "cache-application-mem-ratio": 0.1,
+    "cache-block-ids-mem-ratio": 3,
+    "cache-block-mem-ratio": 2,
+    "cache-boost-of-ids-mem-ratio": 3,
+    "cache-client-mem-ratio": 0.1,
+    "cache-conversation-last-status-ids-mem-ratio": 2,
+    "cache-conversation-mem-ratio": 1,
+    "cache-domain-permission-draft-mem-ratio": 0.5,
+    "cache-domain-permission-subscription-mem-ratio": 0.5,
+    "cache-emoji-category-mem-ratio": 0.1,
+    "cache-emoji-mem-ratio": 3,
+    "cache-filter-keyword-mem-ratio": 0.5,
+    "cache-filter-mem-ratio": 0.5,
+    "cache-filter-status-mem-ratio": 0.5,
+    "cache-follow-ids-mem-ratio": 4,
+    "cache-follow-mem-ratio": 2,
+    "cache-follow-request-ids-mem-ratio": 2,
+    "cache-follow-request-mem-ratio": 2,
+    "cache-following-tag-ids-mem-ratio": 2,
+    "cache-in-reply-to-ids-mem-ratio": 3,
+    "cache-instance-mem-ratio": 1,
+    "cache-interaction-request-mem-ratio": 1,
+    "cache-list-ids-mem-ratio": 2,
+    "cache-list-mem-ratio": 1,
+    "cache-listed-ids-mem-ratio": 2,
+    "cache-marker-mem-ratio": 0.5,
+    "cache-media-mem-ratio": 4,
+    "cache-memory-target": "100MiB",
+    "cache-mention-mem-ratio": 2,
+    "cache-move-mem-ratio": 0.1,
+    "cache-notification-mem-ratio": 2,
+    "cache-poll-mem-ratio": 1,
+    "cache-poll-vote-ids-mem-ratio": 2,
+    "cache-poll-vote-mem-ratio": 2,
+    "cache-report-mem-ratio": 1,
+    "cache-sin-bin-status-mem-ratio": 0.5,
+    "cache-status-bookmark-ids-mem-ratio": 2,
+    "cache-status-bookmark-mem-ratio": 0.5,
+    "cache-status-edit-mem-ratio": 2,
+    "cache-status-fave-ids-mem-ratio": 3,
+    "cache-status-fave-mem-ratio": 2,
+    "cache-status-mem-ratio": 5,
+    "cache-tag-mem-ratio": 2,
+    "cache-thread-mute-mem-ratio": 0.2,
+    "cache-token-mem-ratio": 0.75,
+    "cache-tombstone-mem-ratio": 0.5,
+    "cache-user-mem-ratio": 0.25,
+    "cache-user-mute-ids-mem-ratio": 3,
+    "cache-user-mute-mem-ratio": 2,
+    "cache-visibility-mem-ratio": 2,
+    "cache-web-push-subscription-ids-mem-ratio": 1,
+    "cache-web-push-subscription-mem-ratio": 1,
+    "cache-webfinger-mem-ratio": 0.1,
     "config-path": "internal/config/testdata/test.yaml",
     "db-address": ":memory:",
     "db-database": "gotosocial_prod",
@@ -91,7 +91,7 @@ EXPECT=$(cat << "EOF"
     "db-port": 6969,
     "db-postgres-connection-string": "",
     "db-sqlite-busy-timeout": 1000000000,
-    "db-sqlite-cache-size": 0,
+    "db-sqlite-cache-size": "0B",
     "db-sqlite-journal-mode": "DELETE",
     "db-sqlite-synchronous": "FULL",
     "db-tls-ca-cert": "",
@@ -101,12 +101,10 @@ EXPECT=$(cat << "EOF"
     "dry-run": true,
     "email": "",
     "host": "example.com",
-    "http-client": {
-        "allow-ips": [],
-        "block-ips": [],
-        "timeout": 30000000000,
-        "tls-insecure-skip-verify": false
-    },
+    "http-client-allow-ips": [],
+    "http-client-block-ips": [],
+    "http-client-timeout": 30000000000,
+    "http-client-tls-insecure-skip-verify": false,
     "instance-allow-backdating-statuses": true,
     "instance-deliver-to-shared-inboxes": false,
     "instance-expose-peers": true,
@@ -137,17 +135,14 @@ EXPECT=$(cat << "EOF"
     "media-cleanup-from": "00:00",
     "media-description-max-chars": 5000,
     "media-description-min-chars": 69,
-    "media-emoji-local-max-size": 420,
-    "media-emoji-remote-max-size": 420,
+    "media-emoji-local-max-size": "420B",
+    "media-emoji-remote-max-size": "420B",
     "media-ffmpeg-pool-size": 8,
-    "media-image-size-hint": 5242880,
-    "media-local-max-size": 420,
+    "media-image-size-hint": "5.00MiB",
+    "media-local-max-size": "420B",
     "media-remote-cache-days": 30,
-    "media-remote-max-size": 420,
-    "media-video-size-hint": 41943040,
-    "metrics-auth-enabled": false,
-    "metrics-auth-password": "",
-    "metrics-auth-username": "",
+    "media-remote-max-size": "420B",
+    "media-video-size-hint": "40.0MiB",
     "metrics-enabled": false,
     "oidc-admin-groups": [
         "steamy"
@@ -187,6 +182,7 @@ EXPECT=$(cat << "EOF"
     "storage-local-base-path": "/root/store",
     "storage-s3-access-key": "minio",
     "storage-s3-bucket": "gts",
+    "storage-s3-bucket-lookup": "auto",
     "storage-s3-endpoint": "localhost:9000",
     "storage-s3-proxy": true,
     "storage-s3-redirect-url": "",
@@ -198,9 +194,6 @@ EXPECT=$(cat << "EOF"
     "tls-certificate-chain": "",
     "tls-certificate-key": "",
     "tracing-enabled": false,
-    "tracing-endpoint": "localhost:4317",
-    "tracing-insecure-transport": true,
-    "tracing-transport": "grpc",
     "trusted-proxies": [
         "127.0.0.1/32",
         "docker.host.local"
@@ -268,7 +261,6 @@ GTS_MEDIA_EMOJI_LOCAL_MAX_SIZE=420 \
 GTS_MEDIA_EMOJI_REMOTE_MAX_SIZE=420 \
 GTS_MEDIA_FFMPEG_POOL_SIZE=8 \
 GTS_MEDIA_VIDEO_SIZE_HINT='40MiB' \
-GTS_METRICS_AUTH_ENABLED=false \
 GTS_METRICS_ENABLED=false \
 GTS_STORAGE_BACKEND='local' \
 GTS_STORAGE_LOCAL_BASE_PATH='/root/store' \
@@ -276,6 +268,7 @@ GTS_STORAGE_S3_ACCESS_KEY='minio' \
 GTS_STORAGE_S3_SECRET_KEY='miniostorage' \
 GTS_STORAGE_S3_ENDPOINT='localhost:9000' \
 GTS_STORAGE_S3_USE_SSL='false' \
+GTS_STORAGE_S3_BUCKET_LOOKUP='auto' \
 GTS_STORAGE_S3_PROXY='true' \
 GTS_STORAGE_S3_REDIRECT_URL='' \
 GTS_STORAGE_S3_BUCKET='gts' \
@@ -307,11 +300,11 @@ GTS_SMTP_DISCLOSE_RECIPIENTS=true \
 GTS_SYSLOG_ENABLED=true \
 GTS_SYSLOG_PROTOCOL='udp' \
 GTS_SYSLOG_ADDRESS='127.0.0.1:6969' \
-GTS_TRACING_ENDPOINT='localhost:4317' \
-GTS_TRACING_INSECURE_TRANSPORT=true \
 GTS_ADVANCED_COOKIES_SAMESITE='strict' \
 GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS="192.0.2.0/24,127.0.0.1/32" \
 GTS_ADVANCED_RATE_LIMIT_REQUESTS=6969 \
+GTS_ADVANCED_SCRAPER_DETERRENCE_DIFFICULTY=5 \
+GTS_ADVANCED_SCRAPER_DETERRENCE_ENABLED=true \
 GTS_ADVANCED_SENDER_MULTIPLIER=-1 \
 GTS_ADVANCED_THROTTLING_MULTIPLIER=-1 \
 GTS_ADVANCED_THROTTLING_RETRY_AFTER='10s' \

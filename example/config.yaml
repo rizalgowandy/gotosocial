@@ -580,9 +580,9 @@ media-remote-max-size: 40MiB
 media-description-min-chars: 0
 
 # Int. Maximum amount of characters permitted in an image or video description.
-# Examples: [1000, 1500, 3000]
-# Default: 1500
-media-description-max-chars: 1500
+# Examples: [1000, 5000, 10000]
+# Default: 5000
+media-description-max-chars: 5000
 
 # Size. Max size in bytes of emojis uploaded to this instance via the admin API.
 #
@@ -748,6 +748,19 @@ storage-s3-secret-key: ""
 # Examples: ["gts","cool-instance"]
 # Default: ""
 storage-s3-bucket: ""
+
+# String. Bucket lookup type.
+#
+# If you know what kind of bucket lookup type you need you can specify it here.
+#
+# Many providers are no longer offering path-style bucket access and only subdomain-style. Then,
+# you will need to specify "dns" here instead of the default "auto".
+#
+# If your provider only supports path-style bucket access, specify "path".
+#
+# Examples: ["path", "dns", "auto"]
+# Default: "auto"
+storage-s3-bucket-lookup: "auto"
 
 ###########################
 ##### STATUSES CONFIG #####
@@ -993,37 +1006,9 @@ request-id-header: "X-Request-Id"
 # Default: false
 tracing-enabled: false
 
-# String. Set the transport protocol for the tracing system. Can either be "grpc"
-# for OTLP gRPC, or "http" for OTLP HTTP.
-# Options: ["grpc", "http"]
-# Default: "grpc"
-tracing-transport: "grpc"
-
-# String. Endpoint of the trace ingester. When using the gRPC or HTTP based transports,
-# provide the endpoint as a single address/port combination without a protocol scheme.
-# Examples: ["localhost:4317"]
-# Default: ""
-tracing-endpoint: ""
-
-# Bool. Disable TLS for the gRPC and HTTP transport protocols.
-# Default: false
-tracing-insecure-transport: false
-
 # Bool. Enable OpenTelemetry based metrics support.
 # Default: false
 metrics-enabled: false
-
-# Bool. Enable HTTP Basic Authentication for Prometheus metrics endpoint.
-# Default: false
-metrics-auth-enabled: false
-
-# String. Username for Prometheus metrics endpoint.
-# Default: ""
-metrics-auth-username: ""
-
-# String. Password for Prometheus metrics endpoint.
-# Default: ""
-metrics-auth-password: ""
 
 ################################
 ##### HTTP CLIENT SETTINGS #####
@@ -1261,3 +1246,41 @@ advanced-csp-extra-uris: []
 # Options: ["block", "allow", ""]
 # Default: ""
 advanced-header-filter-mode: ""
+
+# Bool. Enables a proof-of-work based deterrence against scrapers
+# on profile and status web pages. This will generate a unique but
+# deterministic challenge for each HTTP client to complete before
+# accessing the above mentioned endpoints, on success being given
+# a cookie that permits challenge-less access within a 1hr window.
+#
+# The outcome of this is that it should make scraping of these
+# endpoints economically unfeasible, while having a negligible
+# performance impact on your own instance.
+#
+# The downside is that it requires javascript to be enabled.
+#
+# For more details please check the documentation at:
+# https://docs.gotosocial.org/en/latest/advanced/scraper_deterrence
+#
+# Options: [true, false]
+# Default: true
+advanced-scraper-deterrence-enabled: false
+
+# Uint. Allows tweaking the difficulty of the proof-of-work algorithm
+# used in the scraper deterrence. This determines how many leading '0'
+# characters are required to be generated in each solution. Higher
+# values will on-average take longer to find solutions for, and the
+# inverse is also true.
+#
+# The downside is that if your deterrence takes too long to solve,
+# it may deter some users from viewing your web status / profile page.
+# And conversely, the longer it takes for a solution to be found, the
+# more you'll be incurring increased CPU usage for scrapers, and possibly
+# even cause their operation to time out before completion.
+#
+# For more details please check the documentation at:
+# https://docs.gotosocial.org/en/latest/advanced/scraper_deterrence
+#
+# Examples: [3, 4, 5]
+# Default: 4
+advanced-scraper-deterrence-difficulty: 4

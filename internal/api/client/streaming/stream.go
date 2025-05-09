@@ -24,12 +24,12 @@ import (
 	"slices"
 	"time"
 
-	apiutil "github.com/superseriousbusiness/gotosocial/internal/api/util"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/id"
-	"github.com/superseriousbusiness/gotosocial/internal/log"
-	streampkg "github.com/superseriousbusiness/gotosocial/internal/stream"
+	apiutil "code.superseriousbusiness.org/gotosocial/internal/api/util"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/id"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
+	streampkg "code.superseriousbusiness.org/gotosocial/internal/stream"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -170,7 +170,6 @@ func (m *Module) StreamGETHandler(c *gin.Context) {
 
 	// Prefer query token else use header token.
 	token := cmp.Or(queryToken, headerToken)
-
 	if token != "" {
 
 		// Token was provided, use it to authorize stream.

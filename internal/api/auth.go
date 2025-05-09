@@ -18,19 +18,21 @@
 package api
 
 import (
+	"code.superseriousbusiness.org/gotosocial/internal/api/auth"
+	apiutil "code.superseriousbusiness.org/gotosocial/internal/api/util"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/middleware"
+	"code.superseriousbusiness.org/gotosocial/internal/oidc"
+	"code.superseriousbusiness.org/gotosocial/internal/processing"
+	"code.superseriousbusiness.org/gotosocial/internal/router"
+	"code.superseriousbusiness.org/gotosocial/internal/state"
 	"github.com/gin-gonic/gin"
-	"github.com/superseriousbusiness/gotosocial/internal/api/auth"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/middleware"
-	"github.com/superseriousbusiness/gotosocial/internal/oidc"
-	"github.com/superseriousbusiness/gotosocial/internal/processing"
-	"github.com/superseriousbusiness/gotosocial/internal/router"
-	"github.com/superseriousbusiness/gotosocial/internal/state"
 )
 
 type Auth struct {
 	routerSession *gtsmodel.RouterSession
 	sessionName   string
+	cookiePolicy  apiutil.CookiePolicy
 
 	auth *auth.Module
 }
@@ -47,7 +49,12 @@ func (a *Auth) Route(r *router.Router, m ...gin.HandlerFunc) {
 			Directives: []string{"private", "max-age=120"},
 			Vary:       []string{"Accept", "Accept-Encoding"},
 		})
-		sessionMiddleware = middleware.Session(a.sessionName, a.routerSession.Auth, a.routerSession.Crypt)
+		sessionMiddleware = middleware.Session(
+			a.sessionName,
+			a.routerSession.Auth,
+			a.routerSession.Crypt,
+			a.cookiePolicy,
+		)
 	)
 	authGroup.Use(m...)
 	oauthGroup.Use(m...)
@@ -64,10 +71,12 @@ func NewAuth(
 	idp oidc.IDP,
 	routerSession *gtsmodel.RouterSession,
 	sessionName string,
+	cookiePolicy apiutil.CookiePolicy,
 ) *Auth {
 	return &Auth{
 		routerSession: routerSession,
 		sessionName:   sessionName,
+		cookiePolicy:  cookiePolicy,
 		auth:          auth.New(state, p, idp),
 	}
 }

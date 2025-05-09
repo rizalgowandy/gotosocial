@@ -20,9 +20,9 @@ package tokens
 import (
 	"net/http"
 
+	apiutil "code.superseriousbusiness.org/gotosocial/internal/api/util"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
 	"github.com/gin-gonic/gin"
-	apiutil "github.com/superseriousbusiness/gotosocial/internal/api/util"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
 )
 
 // TokenInvalidatePOSTHandler swagger:operation POST /api/v1/tokens/{id}/invalidate tokenInvalidatePost
@@ -73,10 +73,9 @@ func (m *Module) TokenInvalidatePOSTHandler(c *gin.Context) {
 		return
 	}
 
-	if authed.Account.IsMoving() {
-		apiutil.ForbiddenAfterMove(c)
-		return
-	}
+	// Note that we don't perform a move check,
+	// as even moved accounts should be able to
+	// invalidate their old tokens.
 
 	if _, err := apiutil.NegotiateAccept(c, apiutil.JSONAcceptHeaders...); err != nil {
 		apiutil.ErrorHandler(c, gtserror.NewErrorNotAcceptable(err, err.Error()), m.processor.InstanceGetV1)

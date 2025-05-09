@@ -20,9 +20,9 @@ package config
 import (
 	"time"
 
+	"code.superseriousbusiness.org/gotosocial/internal/language"
 	"codeberg.org/gruf/go-bytesize"
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/superseriousbusiness/gotosocial/internal/language"
 )
 
 // Defaults contains a populated Configuration with reasonable defaults. Note that
@@ -87,11 +87,12 @@ var Defaults = Configuration{
 	MediaCleanupEvery:        24 * time.Hour, // 1/day.
 	MediaFfmpegPoolSize:      1,
 
-	StorageBackend:       "local",
-	StorageLocalBasePath: "/gotosocial/storage",
-	StorageS3UseSSL:      true,
-	StorageS3Proxy:       false,
-	StorageS3RedirectURL: "",
+	StorageBackend:        "local",
+	StorageLocalBasePath:  "/gotosocial/storage",
+	StorageS3UseSSL:       true,
+	StorageS3Proxy:        false,
+	StorageS3RedirectURL:  "",
+	StorageS3BucketLookup: "auto",
 
 	StatusesMaxChars:           5000,
 	StatusesPollMaxOptions:     6,
@@ -122,26 +123,34 @@ var Defaults = Configuration{
 	SMTPFrom:               "",
 	SMTPDiscloseRecipients: false,
 
-	TracingEnabled:           false,
-	TracingTransport:         "grpc",
-	TracingEndpoint:          "",
-	TracingInsecureTransport: false,
-
-	MetricsEnabled:     false,
-	MetricsAuthEnabled: false,
+	TracingEnabled: false,
+	MetricsEnabled: false,
 
 	SyslogEnabled:  false,
 	SyslogProtocol: "udp",
 	SyslogAddress:  "localhost:514",
 
-	AdvancedCookiesSamesite:      "lax",
-	AdvancedRateLimitRequests:    300, // 1 per second per 5 minutes
-	AdvancedRateLimitExceptions:  IPPrefixes{},
-	AdvancedThrottlingMultiplier: 8, // 8 open requests per CPU
-	AdvancedThrottlingRetryAfter: time.Second * 30,
-	AdvancedSenderMultiplier:     2, // 2 senders per CPU
-	AdvancedCSPExtraURIs:         []string{},
-	AdvancedHeaderFilterMode:     RequestHeaderFilterModeDisabled,
+	Advanced: AdvancedConfig{
+		SenderMultiplier: 2, // 2 senders per CPU
+		CSPExtraURIs:     []string{},
+		HeaderFilterMode: RequestHeaderFilterModeDisabled,
+		CookiesSamesite:  "lax",
+
+		RateLimit: RateLimitConfig{
+			Requests:   300, // 1 per second per 5 minutes
+			Exceptions: IPPrefixes{},
+		},
+
+		Throttling: ThrottlingConfig{
+			Multiplier: 8, // 8 open requests per CPU
+			RetryAfter: 30 * time.Second,
+		},
+
+		ScraperDeterrence: ScraperDeterrenceConfig{
+			Enabled:    false,
+			Difficulty: 4,
+		},
+	},
 
 	Cache: CacheConfiguration{
 		// Rough memory target that the total

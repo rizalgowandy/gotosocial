@@ -26,10 +26,10 @@ import (
 
 	"code.superseriousbusiness.org/activity/streams"
 	"code.superseriousbusiness.org/activity/streams/vocab"
+	"code.superseriousbusiness.org/gotosocial/internal/ap"
+	"code.superseriousbusiness.org/gotosocial/internal/cache"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
 	"github.com/stretchr/testify/suite"
-	"github.com/superseriousbusiness/gotosocial/internal/ap"
-	"github.com/superseriousbusiness/gotosocial/internal/cache"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
 )
 
 type ASToInternalTestSuite struct {
@@ -570,7 +570,7 @@ func (suite *ASToInternalTestSuite) TestParseAnnounce() {
 
 func (suite *ASToInternalTestSuite) TestParseHonkAccount() {
 	// Hopefully comprehensive checks for
-	// https://github.com/superseriousbusiness/gotosocial/issues/2527.
+	// https://codeberg.org/superseriousbusiness/gotosocial/issues/2527.
 
 	const honk_user = `{
   "@context": "https://www.w3.org/ns/activitystreams",

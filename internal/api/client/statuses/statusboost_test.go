@@ -22,13 +22,13 @@ import (
 	"strings"
 	"testing"
 
+	"code.superseriousbusiness.org/gotosocial/internal/api/client/statuses"
+	apiutil "code.superseriousbusiness.org/gotosocial/internal/api/util"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/oauth"
+	"code.superseriousbusiness.org/gotosocial/testrig"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
-	"github.com/superseriousbusiness/gotosocial/internal/api/client/statuses"
-	apiutil "github.com/superseriousbusiness/gotosocial/internal/api/util"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/oauth"
-	"github.com/superseriousbusiness/gotosocial/testrig"
 )
 
 type StatusBoostTestSuite struct {
@@ -193,8 +193,8 @@ func (suite *StatusBoostTestSuite) TestPostBoost() {
         "id": "01F8MH6NEM8D7527KZAECTCR76",
         "meta": {
           "focus": {
-            "x": 0,
-            "y": 0
+            "x": -0.5,
+            "y": 0.5
           },
           "original": {
             "aspect": 1.9047619,

@@ -30,41 +30,41 @@ import (
 	"syscall"
 	"time"
 
+	"code.superseriousbusiness.org/gotosocial/cmd/gotosocial/action"
+	"code.superseriousbusiness.org/gotosocial/internal/admin"
+	"code.superseriousbusiness.org/gotosocial/internal/api"
+	apiutil "code.superseriousbusiness.org/gotosocial/internal/api/util"
+	"code.superseriousbusiness.org/gotosocial/internal/cleaner"
+	"code.superseriousbusiness.org/gotosocial/internal/config"
+	"code.superseriousbusiness.org/gotosocial/internal/db/bundb"
+	"code.superseriousbusiness.org/gotosocial/internal/email"
+	"code.superseriousbusiness.org/gotosocial/internal/federation"
+	"code.superseriousbusiness.org/gotosocial/internal/federation/federatingdb"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/interaction"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/spam"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/visibility"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/httpclient"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
+	"code.superseriousbusiness.org/gotosocial/internal/media"
+	"code.superseriousbusiness.org/gotosocial/internal/media/ffmpeg"
+	"code.superseriousbusiness.org/gotosocial/internal/messages"
+	"code.superseriousbusiness.org/gotosocial/internal/middleware"
+	"code.superseriousbusiness.org/gotosocial/internal/oauth"
+	"code.superseriousbusiness.org/gotosocial/internal/oauth/handlers"
+	"code.superseriousbusiness.org/gotosocial/internal/observability"
+	"code.superseriousbusiness.org/gotosocial/internal/oidc"
+	"code.superseriousbusiness.org/gotosocial/internal/processing"
+	"code.superseriousbusiness.org/gotosocial/internal/router"
+	"code.superseriousbusiness.org/gotosocial/internal/state"
+	gtsstorage "code.superseriousbusiness.org/gotosocial/internal/storage"
+	"code.superseriousbusiness.org/gotosocial/internal/subscriptions"
+	"code.superseriousbusiness.org/gotosocial/internal/transport"
+	"code.superseriousbusiness.org/gotosocial/internal/typeutils"
+	"code.superseriousbusiness.org/gotosocial/internal/web"
+	"code.superseriousbusiness.org/gotosocial/internal/webpush"
 	"github.com/KimMachineGun/automemlimit/memlimit"
 	"github.com/gin-gonic/gin"
-	"github.com/superseriousbusiness/gotosocial/cmd/gotosocial/action"
-	"github.com/superseriousbusiness/gotosocial/internal/admin"
-	"github.com/superseriousbusiness/gotosocial/internal/api"
-	apiutil "github.com/superseriousbusiness/gotosocial/internal/api/util"
-	"github.com/superseriousbusiness/gotosocial/internal/cleaner"
-	"github.com/superseriousbusiness/gotosocial/internal/config"
-	"github.com/superseriousbusiness/gotosocial/internal/db/bundb"
-	"github.com/superseriousbusiness/gotosocial/internal/email"
-	"github.com/superseriousbusiness/gotosocial/internal/federation"
-	"github.com/superseriousbusiness/gotosocial/internal/federation/federatingdb"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/interaction"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/spam"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/visibility"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
-	"github.com/superseriousbusiness/gotosocial/internal/httpclient"
-	"github.com/superseriousbusiness/gotosocial/internal/log"
-	"github.com/superseriousbusiness/gotosocial/internal/media"
-	"github.com/superseriousbusiness/gotosocial/internal/media/ffmpeg"
-	"github.com/superseriousbusiness/gotosocial/internal/messages"
-	"github.com/superseriousbusiness/gotosocial/internal/middleware"
-	"github.com/superseriousbusiness/gotosocial/internal/oauth"
-	"github.com/superseriousbusiness/gotosocial/internal/oauth/handlers"
-	"github.com/superseriousbusiness/gotosocial/internal/observability"
-	"github.com/superseriousbusiness/gotosocial/internal/oidc"
-	"github.com/superseriousbusiness/gotosocial/internal/processing"
-	"github.com/superseriousbusiness/gotosocial/internal/router"
-	"github.com/superseriousbusiness/gotosocial/internal/state"
-	gtsstorage "github.com/superseriousbusiness/gotosocial/internal/storage"
-	"github.com/superseriousbusiness/gotosocial/internal/subscriptions"
-	"github.com/superseriousbusiness/gotosocial/internal/transport"
-	"github.com/superseriousbusiness/gotosocial/internal/typeutils"
-	"github.com/superseriousbusiness/gotosocial/internal/web"
-	"github.com/superseriousbusiness/gotosocial/internal/webpush"
 	"go.uber.org/automaxprocs/maxprocs"
 )
 
@@ -184,7 +184,7 @@ var Start action.GTSAction = func(ctx context.Context) error {
 	}
 
 	// Initialize tracing (noop if not enabled).
-	if err := observability.InitializeTracing(); err != nil {
+	if err := observability.InitializeTracing(ctx); err != nil {
 		return fmt.Errorf("error initializing tracing: %w", err)
 	}
 
@@ -377,7 +377,7 @@ var Start action.GTSAction = func(ctx context.Context) error {
 	}
 
 	// Initialize metrics.
-	if err := observability.InitializeMetrics(state.DB); err != nil {
+	if err := observability.InitializeMetrics(ctx, state.DB); err != nil {
 		return fmt.Errorf("error initializing metrics: %w", err)
 	}
 
@@ -478,17 +478,19 @@ var Start action.GTSAction = func(ctx context.Context) error {
 		return fmt.Errorf("error generating session name for session middleware: %w", err)
 	}
 
+	// Configure our instance cookie policy.
+	cookiePolicy := apiutil.NewCookiePolicy()
+
 	var (
-		authModule        = api.NewAuth(state, process, idp, routerSession, sessionName) // auth/oauth paths
-		clientModule      = api.NewClient(state, process)                                // api client endpoints
-		metricsModule     = api.NewMetrics()                                             // Metrics endpoints
-		healthModule      = api.NewHealth(dbService.Ready)                               // Health check endpoints
-		fileserverModule  = api.NewFileserver(process)                                   // fileserver endpoints
-		robotsModule      = api.NewRobots()                                              // robots.txt endpoint
-		wellKnownModule   = api.NewWellKnown(process)                                    // .well-known endpoints
-		nodeInfoModule    = api.NewNodeInfo(process)                                     // nodeinfo endpoint
-		activityPubModule = api.NewActivityPub(dbService, process)                       // ActivityPub endpoints
-		webModule         = web.New(dbService, process)                                  // web pages + user profiles + settings panels etc
+		authModule        = api.NewAuth(state, process, idp, routerSession, sessionName, cookiePolicy) // auth/oauth paths
+		clientModule      = api.NewClient(state, process)                                              // api client endpoints
+		healthModule      = api.NewHealth(dbService.Ready)                                             // Health check endpoints
+		fileserverModule  = api.NewFileserver(process)                                                 // fileserver endpoints
+		robotsModule      = api.NewRobots()                                                            // robots.txt endpoint
+		wellKnownModule   = api.NewWellKnown(process)                                                  // .well-known endpoints
+		nodeInfoModule    = api.NewNodeInfo(process)                                                   // nodeinfo endpoint
+		activityPubModule = api.NewActivityPub(dbService, process)                                     // ActivityPub endpoints
+		webModule         = web.New(dbService, process, cookiePolicy)                                  // web pages + user profiles + settings panels etc
 	)
 
 	// Create per-route / per-grouping middlewares.
@@ -535,7 +537,6 @@ var Start action.GTSAction = func(ctx context.Context) error {
 	// apply throttling *after* rate limiting
 	authModule.Route(route, clLimit, clThrottle, robotsDisallowAll, gzip)
 	clientModule.Route(route, clLimit, clThrottle, robotsDisallowAll, gzip)
-	metricsModule.Route(route, clLimit, clThrottle, robotsDisallowAIOnly)
 	healthModule.Route(route, clLimit, clThrottle, robotsDisallowAIOnly)
 	fileserverModule.Route(route, fsMainLimit, fsThrottle, robotsDisallowAIOnly)
 	fileserverModule.RouteEmojis(route, instanceAccount.ID, fsEmojiLimit, fsThrottle, robotsDisallowAIOnly)

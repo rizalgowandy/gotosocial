@@ -23,22 +23,22 @@ import (
 	"net/url"
 	"time"
 
+	"code.superseriousbusiness.org/gotosocial/internal/ap"
+	"code.superseriousbusiness.org/gotosocial/internal/db"
+	"code.superseriousbusiness.org/gotosocial/internal/federation/dereferencing"
+	"code.superseriousbusiness.org/gotosocial/internal/gtscontext"
+	"code.superseriousbusiness.org/gotosocial/internal/id"
+	"code.superseriousbusiness.org/gotosocial/internal/uris"
 	"codeberg.org/gruf/go-kv"
-	"github.com/superseriousbusiness/gotosocial/internal/ap"
-	"github.com/superseriousbusiness/gotosocial/internal/db"
-	"github.com/superseriousbusiness/gotosocial/internal/federation/dereferencing"
-	"github.com/superseriousbusiness/gotosocial/internal/gtscontext"
-	"github.com/superseriousbusiness/gotosocial/internal/id"
-	"github.com/superseriousbusiness/gotosocial/internal/uris"
 
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/log"
-	"github.com/superseriousbusiness/gotosocial/internal/messages"
-	"github.com/superseriousbusiness/gotosocial/internal/processing/account"
-	"github.com/superseriousbusiness/gotosocial/internal/processing/common"
-	"github.com/superseriousbusiness/gotosocial/internal/state"
-	"github.com/superseriousbusiness/gotosocial/internal/util"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
+	"code.superseriousbusiness.org/gotosocial/internal/messages"
+	"code.superseriousbusiness.org/gotosocial/internal/processing/account"
+	"code.superseriousbusiness.org/gotosocial/internal/processing/common"
+	"code.superseriousbusiness.org/gotosocial/internal/state"
+	"code.superseriousbusiness.org/gotosocial/internal/util"
 )
 
 // fediAPI wraps processing functions
@@ -811,6 +811,9 @@ func (p *fediAPI) UpdateAccount(ctx context.Context, fMsg *messages.FromFediAPI)
 		log.Errorf(ctx, "error refreshing account: %v", err)
 	}
 
+	// Account representation has changed, invalidate from timelines.
+	p.surface.invalidateTimelineEntriesByAccount(account.ID)
+
 	return nil
 }
 
@@ -988,12 +991,31 @@ func (p *fediAPI) UpdateStatus(ctx context.Context, fMsg *messages.FromFediAPI) 
 		}
 	}
 
+	// Notify any *new* mentions added
+	// to this status by the editor.
+	for _, mention := range status.Mentions {
+		// Check if we've seen
+		// this mention already.
+		if !mention.IsNew {
+			// Already seen
+			// it, skip.
+			continue
+		}
+
+		// Haven't seen this mention
+		// yet, notify it if necessary.
+		mention.Status = status
+		if err := p.surface.notifyMention(ctx, mention); err != nil {
+			log.Errorf(ctx, "error notifying mention: %v", err)
+		}
+	}
+
 	// Push message that the status has been edited to streams.
 	if err := p.surface.timelineStatusUpdate(ctx, status); err != nil {
 		log.Errorf(ctx, "error streaming status edit: %v", err)
 	}
 
-	// Status representation was refetched, uncache from timelines.
+	// Status representation changed, uncache from timelines.
 	p.surface.invalidateStatusFromTimelines(status.ID)
 
 	return nil

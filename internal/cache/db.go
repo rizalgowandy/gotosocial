@@ -20,11 +20,11 @@ package cache
 import (
 	"sync/atomic"
 
+	"code.superseriousbusiness.org/gotosocial/internal/cache/domain"
+	"code.superseriousbusiness.org/gotosocial/internal/config"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
 	"codeberg.org/gruf/go-structr"
-	"github.com/superseriousbusiness/gotosocial/internal/cache/domain"
-	"github.com/superseriousbusiness/gotosocial/internal/config"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/log"
 )
 
 type DBCaches struct {
@@ -1082,6 +1082,12 @@ func (c *Caches) initMention() {
 		m2.Status = nil
 		m2.OriginAccount = nil
 		m2.TargetAccount = nil
+
+		// Zero non-db fields.
+		m2.NameString = ""
+		m2.IsNew = false
+		m2.TargetAccountURI = ""
+		m2.TargetAccountURL = ""
 
 		return m2
 	}

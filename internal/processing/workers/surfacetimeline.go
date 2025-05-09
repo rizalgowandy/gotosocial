@@ -21,15 +21,15 @@ import (
 	"context"
 	"errors"
 
-	"github.com/superseriousbusiness/gotosocial/internal/cache/timeline"
-	statusfilter "github.com/superseriousbusiness/gotosocial/internal/filter/status"
-	"github.com/superseriousbusiness/gotosocial/internal/filter/usermute"
-	"github.com/superseriousbusiness/gotosocial/internal/gtscontext"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/log"
-	"github.com/superseriousbusiness/gotosocial/internal/stream"
-	"github.com/superseriousbusiness/gotosocial/internal/util"
+	"code.superseriousbusiness.org/gotosocial/internal/cache/timeline"
+	statusfilter "code.superseriousbusiness.org/gotosocial/internal/filter/status"
+	"code.superseriousbusiness.org/gotosocial/internal/filter/usermute"
+	"code.superseriousbusiness.org/gotosocial/internal/gtscontext"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/log"
+	"code.superseriousbusiness.org/gotosocial/internal/stream"
+	"code.superseriousbusiness.org/gotosocial/internal/util"
 )
 
 // timelineAndNotifyStatus inserts the given status into the HOME
@@ -161,7 +161,7 @@ func (s *Surface) timelineAndNotifyStatusForFollowers(
 
 			// Add status to home timeline for owner of
 			// this follow (origin account), if applicable.
-			if homeTimelined := s.timelineStatus(ctx,
+			if homeTimelined = s.timelineStatus(ctx,
 				s.State.Caches.Timelines.Home.MustGet(follow.AccountID),
 				follow.Account,
 				status,
@@ -824,6 +824,12 @@ func (s *Surface) invalidateStatusFromTimelines(statusID string) {
 func (s *Surface) removeTimelineEntriesByAccount(accountID string) {
 	s.State.Caches.Timelines.Home.RemoveByAccountIDs(accountID)
 	s.State.Caches.Timelines.List.RemoveByAccountIDs(accountID)
+}
+
+// removeTimelineEntriesByAccount invalidates all cached timeline entries authored by account ID.
+func (s *Surface) invalidateTimelineEntriesByAccount(accountID string) {
+	s.State.Caches.Timelines.Home.UnprepareByAccountIDs(accountID)
+	s.State.Caches.Timelines.List.UnprepareByAccountIDs(accountID)
 }
 
 func (s *Surface) removeRelationshipFromTimelines(ctx context.Context, timelineAccountID string, targetAccountID string) {

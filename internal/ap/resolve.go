@@ -28,7 +28,7 @@ import (
 	"code.superseriousbusiness.org/activity/pub"
 	"code.superseriousbusiness.org/activity/streams"
 	"code.superseriousbusiness.org/activity/streams/vocab"
-	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
+	"code.superseriousbusiness.org/gotosocial/internal/gtserror"
 )
 
 // ResolveActivity is a util function for pulling a pub.Activity type out of an incoming request body,
@@ -78,7 +78,7 @@ func ResolveIncomingActivity(r *http.Request) (pub.Activity, bool, gtserror.With
 	}
 
 	// Normalize any Statusable, Accountable, Pollable fields found.
-	// (see: https://github.com/superseriousbusiness/gotosocial/issues/1661)
+	// (see: https://codeberg.org/superseriousbusiness/gotosocial/issues/1661)
 	NormalizeIncomingActivity(activity, raw)
 
 	return activity, true, nil

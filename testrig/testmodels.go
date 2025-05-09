@@ -37,10 +37,10 @@ import (
 	"code.superseriousbusiness.org/activity/pub"
 	"code.superseriousbusiness.org/activity/streams"
 	"code.superseriousbusiness.org/activity/streams/vocab"
-	"github.com/superseriousbusiness/gotosocial/internal/ap"
-	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
-	"github.com/superseriousbusiness/gotosocial/internal/transport"
-	"github.com/superseriousbusiness/gotosocial/internal/util"
+	"code.superseriousbusiness.org/gotosocial/internal/ap"
+	"code.superseriousbusiness.org/gotosocial/internal/gtsmodel"
+	"code.superseriousbusiness.org/gotosocial/internal/transport"
+	"code.superseriousbusiness.org/gotosocial/internal/util"
 )
 
 // NewTestTokens returns a map of tokens keyed according to which account the token belongs to.
@@ -708,6 +708,12 @@ func NewTestAttachments() map[string]*gtsmodel.MediaAttachment {
 					Height: 268,
 					Size:   137216,
 					Aspect: 1.9104477,
+				},
+				// Focus on top-left
+				// quadrant of image.
+				Focus: gtsmodel.Focus{
+					X: -0.5,
+					Y: 0.5,
 				},
 			},
 			AccountID:         "01F8MH17FWEB39HZJ76B6VXSKF",
@@ -1908,8 +1914,8 @@ func NewTestInstances() map[string]*gtsmodel.Instance {
 			Title:                  "GoToSocial Testrig Instance",
 			ShortDescription:       "<p>This is the GoToSocial testrig. It doesn't federate or anything.</p><p>When the testrig is shut down, all data on it will be deleted.</p><p>Don't use this in production!</p>",
 			ShortDescriptionText:   "This is the GoToSocial testrig. It doesn't federate or anything.\n\nWhen the testrig is shut down, all data on it will be deleted.\n\nDon't use this in production!",
-			Description:            "<p>Here's a fuller description of the GoToSocial testrig instance.</p><p>This instance is for testing purposes only. It doesn't federate at all. Go check out <a href=\"https://github.com/superseriousbusiness/gotosocial/tree/main/testrig\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://github.com/superseriousbusiness/gotosocial/tree/main/testrig</a> and <a href=\"https://github.com/superseriousbusiness/gotosocial/blob/main/CONTRIBUTING.md#testing\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://github.com/superseriousbusiness/gotosocial/blob/main/CONTRIBUTING.md#testing</a></p><p>Users on this instance:</p><ul><li><span class=\"h-card\"><a href=\"http://localhost:8080/@admin\" class=\"u-url mention\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">@<span>admin</span></a></span> (admin!).</li><li><span class=\"h-card\"><a href=\"http://localhost:8080/@1happyturtle\" class=\"u-url mention\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">@<span>1happyturtle</span></a></span> (posts about turtles, we don't know why).</li><li><span class=\"h-card\"><a href=\"http://localhost:8080/@the_mighty_zork\" class=\"u-url mention\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">@<span>the_mighty_zork</span></a></span> (who knows).</li></ul><p>If you need to edit the models for the testrig, you can do so at <code>internal/testmodels.go</code>.</p>",
-			DescriptionText:        "Here's a fuller description of the GoToSocial testrig instance.\n\nThis instance is for testing purposes only. It doesn't federate at all. Go check out https://github.com/superseriousbusiness/gotosocial/tree/main/testrig and https://github.com/superseriousbusiness/gotosocial/blob/main/CONTRIBUTING.md#testing\n\nUsers on this instance:\n\n- @admin (admin!).\n- @1happyturtle (posts about turtles, we don't know why).\n- @the_mighty_zork (who knows).\n\nIf you need to edit the models for the testrig, you can do so at `internal/testmodels.go`.",
+			Description:            "<p>Here's a fuller description of the GoToSocial testrig instance.</p><p>This instance is for testing purposes only. It doesn't federate at all. Go check out <a href=\"https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/testrig\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/testrig</a> and <a href=\"https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/CONTRIBUTING.md#testing\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/CONTRIBUTING.md#testing</a></p><p>Users on this instance:</p><ul><li><span class=\"h-card\"><a href=\"http://localhost:8080/@admin\" class=\"u-url mention\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">@<span>admin</span></a></span> (admin!).</li><li><span class=\"h-card\"><a href=\"http://localhost:8080/@1happyturtle\" class=\"u-url mention\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">@<span>1happyturtle</span></a></span> (posts about turtles, we don't know why).</li><li><span class=\"h-card\"><a href=\"http://localhost:8080/@the_mighty_zork\" class=\"u-url mention\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">@<span>the_mighty_zork</span></a></span> (who knows).</li></ul><p>If you need to edit the models for the testrig, you can do so at <code>internal/testmodels.go</code>.</p>",
+			DescriptionText:        "Here's a fuller description of the GoToSocial testrig instance.\n\nThis instance is for testing purposes only. It doesn't federate at all. Go check out https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/testrig and https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/CONTRIBUTING.md#testing\n\nUsers on this instance:\n\n- @admin (admin!).\n- @1happyturtle (posts about turtles, we don't know why).\n- @the_mighty_zork (who knows).\n\nIf you need to edit the models for the testrig, you can do so at `internal/testmodels.go`.",
 			Terms:                  "<p>This is where a list of terms and conditions might go.</p><p>For example:</p><p>If you want to sign up on this instance, you oughta know that we:</p><ol><li>Will sell your data to whoever offers.</li><li>Secure the server with password <code>password</code> wherever possible.</li></ol>",
 			TermsText:              "This is where a list of terms and conditions might go.\n\nFor example:\n\nIf you want to sign up on this instance, you oughta know that we:\n\n1. Will sell your data to whoever offers.\n2. Secure the server with password `password` wherever possible.",
 			ContactEmail:           "admin@example.org",
@@ -3508,6 +3514,49 @@ func NewTestActivities(accounts map[string]*gtsmodel.Account) map[string]Activit
 	keyToSignDelete := accounts["remote_account_1"].PrivateKey
 	deleteForRemoteAccount3Sig, deleteForRemoteAccount3Digest, deleteForRemoteAccount3Date := GetSignatureForActivity(deleteForRemoteAccount3, "https://somewhere.mysterious/users/rest_in_piss#main-key", keyToSignDelete, URLMustParse(accounts["local_account_1"].InboxURI))
 
+	remoteAccount2Status1Updated := NewAPNote(
+		URLMustParse("http://example.org/users/Some_User/statuses/01HE7XJ1CG84TBKH5V9XKBVGF5"),
+		URLMustParse("http://example.org/@Some_User/statuses/01HE7XJ1CG84TBKH5V9XKBVGF5"),
+		TimeMustParse("2023-11-02T12:44:25+02:00"),
+		`<p>hi <span class="h-card"><a href="http://localhost:8080/@admin" class="u-url mention" rel="nofollow noreferrer noopener" target="_blank">@<span>admin</span></a></span> here's some media for ya, <span class="h-card"><a href="http://localhost:8080/@the_mighty_zork" class="u-url mention" rel="nofollow noreferrer noopener" target="_blank">@<span>the_mighty_zork</span></a></span> you might like this too</p>`,
+		"<p>some unknown media included</p>",
+		URLMustParse("http://example.org/users/Some_User"),
+		[]*url.URL{
+			ap.PublicURI(),
+		},
+		[]*url.URL{
+			URLMustParse("http://example.org/users/Some_User/followers"),
+			URLMustParse("http://localhost:8080/users/admin"),
+			URLMustParse("http://localhost:8080/users/the_mighty_zork"),
+		},
+		true,
+		[]vocab.ActivityStreamsMention{
+			newAPMention(
+				URLMustParse("http://localhost:8080/users/admin"),
+				"@admin@localhost:8080",
+			),
+			newAPMention(
+				URLMustParse("http://localhost:8080/users/the_mighty_zork"),
+				"@the_mighty_zork@localhost:8080",
+			),
+		},
+		nil,
+		nil,
+	)
+	update := WrapAPNoteInUpdate(
+		URLMustParse("http://example.org/users/Some_User/statuses/01HE7XJ1CG84TBKH5V9XKBVGF5/update1"),
+		URLMustParse("http://example.org/users/Some_User/statuses/01HE7XJ1CG84TBKH5V9XKBVGF5"),
+		URLMustParse("http://example.org/users/Some_User"),
+		TimeMustParse("2023-11-02T12:46:25+02:00"),
+		remoteAccount2Status1Updated,
+	)
+	updateSig, updateDigest, updateDate := GetSignatureForActivity(
+		update,
+		accounts["remote_account_2"].PublicKeyURI,
+		accounts["remote_account_2"].PrivateKey,
+		URLMustParse(accounts["local_account_1"].InboxURI),
+	)
+
 	return map[string]ActivityWithSignature{
 		"dm_for_zork": {
 			Activity:        createDmForZork,
@@ -3556,6 +3605,12 @@ func NewTestActivities(accounts map[string]*gtsmodel.Account) map[string]Activit
 			SignatureHeader: deleteForRemoteAccount3Sig,
 			DigestHeader:    deleteForRemoteAccount3Digest,
 			DateHeader:      deleteForRemoteAccount3Date,
+		},
+		"remote_account_2_status_1_update": {
+			Activity:        update,
+			SignatureHeader: updateSig,
+			DigestHeader:    updateDigest,
+			DateHeader:      updateDate,
 		},
 	}
 }
@@ -5178,6 +5233,27 @@ func WrapAPNoteInCreate(createID *url.URL, createActor *url.URL, createPublished
 	}
 
 	return create
+}
+
+func WrapAPNoteInUpdate(
+	updateID *url.URL,
+	updateTarget *url.URL,
+	updateActor *url.URL,
+	updatePublished time.Time,
+	updateNote vocab.ActivityStreamsNote,
+) vocab.ActivityStreamsUpdate {
+	update := streams.NewActivityStreamsUpdate()
+
+	ap.SetJSONLDId(update, updateID)
+	ap.AppendTargetIRIs(update, updateTarget)
+	ap.AppendActorIRIs(update, updateActor)
+	ap.SetPublished(update, updatePublished)
+
+	objectProp := streams.NewActivityStreamsObjectProperty()
+	objectProp.AppendActivityStreamsNote(updateNote)
+	update.SetActivityStreamsObject(objectProp)
+
+	return update
 }
 
 func newAPAnnounce(announceID *url.URL, announceActor *url.URL, announcePublished time.Time, announceTo *url.URL, announceNote vocab.ActivityStreamsNote) vocab.ActivityStreamsAnnounce {
